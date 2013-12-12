@@ -13,18 +13,15 @@ const Color CYAN = { 0, 255, 255 };
 
 const Color* COLORS[] = { &RED, &ORANGE, &YELLOW, &GREEN, &BLUE, &PURPLE, &PINK, &CYAN };
 
-AnimatedLight::AnimatedLight()
+AnimatedLight::AnimatedLight(Adafruit_NeoPixel *strip, uint8_t pixel)
 {
+	_pixel = pixel;
+	_strip = strip;
 	_animatingFrom = BLACK;
 	_animatingTo = randomizeColor();
-	_color = BLACK;
 	_state = WAITING;
 	_ticksToNextAnimation;
 }
-
-uint8_t AnimatedLight::red() { return _color.red; }
-uint8_t AnimatedLight::green() { return _color.green; }
-uint8_t AnimatedLight::blue() { return _color.blue; }
 
 AnimatedLightState AnimatedLight::state()
 {
@@ -34,9 +31,7 @@ AnimatedLightState AnimatedLight::state()
 Color AnimatedLight::randomizeColor()
 {
 	int numColors = sizeof(COLORS) / sizeof(Color*);
-
 	return *COLORS[random(0, numColors)];
-	//return YELLOW;
 }
 
 void AnimatedLight::tick()
@@ -73,13 +68,14 @@ void AnimatedLight::animate()
 		int greenDiff = _animatingTo.green - _animatingFrom.green;
 		int blueDiff = _animatingTo.blue - _animatingFrom.blue;
 
-		_color.red = min(255, _animatingFrom.red + ((redDiff / 30) * _tickCount));
-		_color.green = min(255, _animatingFrom.green + ((greenDiff / 30) * _tickCount));
-		_color.blue = min(255, _animatingFrom.blue + ((blueDiff / 30) * _tickCount));
+		_strip->setPixelColor(_pixel,
+			min(255, _animatingFrom.red + ((redDiff / 30) * _tickCount)),
+			min(255, _animatingFrom.green + ((greenDiff / 30) * _tickCount)),
+			min(255, _animatingFrom.blue + ((blueDiff / 30) * _tickCount)));
 	}
 	else
 	{
-		_animatingFrom = _color;
+		_animatingFrom = _animatingTo;
 		_animatingTo = randomizeColor();
 
 		_tickCount = 0;

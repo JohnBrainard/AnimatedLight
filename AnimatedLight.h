@@ -1,4 +1,5 @@
 #include <arduino.h>
+#include <Adafruit_NeoPixel.h>
 
 #ifndef AMINATED_LIGHT_H
 #define ANIMATED_LIGHT_H
@@ -17,12 +18,7 @@ typedef struct {
 class AnimatedLight
 {
 public:
-	AnimatedLight();
-	AnimatedLight(uint8_t r, uint8_t g, uint8_t b);
-
-	uint8_t red();
-	uint8_t green();
-	uint8_t blue();
+	AnimatedLight(Adafruit_NeoPixel *strip, uint8_t pixel);
 
 	AnimatedLightState state();
 
@@ -33,7 +29,8 @@ private:
 	void wait();
 	void animate();
 
-	Color _color;
+	Adafruit_NeoPixel *_strip;
+	uint8_t _pixel;
 	Color _animatingFrom;
 	Color _animatingTo;
 
