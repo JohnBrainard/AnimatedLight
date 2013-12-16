@@ -1,5 +1,6 @@
 #include <arduino.h>
 #include <Adafruit_NeoPixel.h>
+#include <hsvcolor.h>
 
 #ifndef AMINATED_LIGHT_H
 #define ANIMATED_LIGHT_H
@@ -9,12 +10,6 @@ enum AnimatedLightState {
 	ANIMATING
 };
 
-typedef struct {
-	uint8_t red;
-	uint8_t green;
-	uint8_t blue;
-} Color;
-
 class AnimatedLight
 {
 public:
@@ -23,7 +18,7 @@ public:
 	AnimatedLightState state();
 
 	void tick();
-	Color randomizeColor();
+	RGBColor randomizeColor();
 
 private:
 	void wait();
@@ -31,8 +26,8 @@ private:
 
 	Adafruit_NeoPixel *_strip;
 	uint8_t _pixel;
-	Color _animatingFrom;
-	Color _animatingTo;
+	RGBColor _animatingFrom;
+	RGBColor _animatingTo;
 
 	uint16_t _tickCount;
 	uint16_t _ticksToNextAnimation;
